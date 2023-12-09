@@ -1,24 +1,30 @@
 import Track from "./Track.js";
-import Knob from "./Knob.js";
 
 const noiseKnob = document.querySelector(".noise");
 noiseKnob.addEventListener("mousedown", mousedownHandler);
 
-
 function mousedownHandler(e) {
-    noiseKnob.addEventListener("mousemove", getCursorPosition);
+    console.log(e.target)
+    rotateEase(e);
+    noiseKnob.addEventListener("mousemove", rotate);
     noiseKnob.addEventListener("mouseup", () => {
-        noiseKnob.removeEventListener("mousemove", getCursorPosition);
+        noiseKnob.removeEventListener("mousemove", rotate);
     });
-    console.log(getCursorPosition(e))
 }
 
-function getCursorPosition(e) {
-    const y = e.clientY - e.target.offsetTop;
-    const x = e.clientX - e.target.offsetLeft;
-    console.log([x, y])
-    return [x, y]
+function getAngle(e) {
+    const center = [e.target.offsetHeight / 2, e.target.offsetWidth / 2];
+    const position = [e.clientX - e.target.offsetLeft, e.clientY - e.target.offsetTop];
+    console.log(center, position)
+    const [cX, cY] = center.map((e, i) => position[i] - e);
+    return 180 / Math.PI * Math.atan2(cY, cX) - 135;
 }
 
-const noiseKnob2 = new Knob(document.querySelector(".noise"), {});
-console.log(noiseKnob2);
+function rotate(e) {    
+    noiseKnob.style.transitionDuration = "0ms";
+    noiseKnob.style.transform = `rotate(${getAngle(e)}deg)`;
+}
+function rotateEase(e) {
+    noiseKnob.style.transitionDuration = "300ms";
+    noiseKnob.style.transform = `rotate(${getAngle(e)}deg)`;
+}
