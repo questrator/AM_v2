@@ -1,3 +1,7 @@
+body {
+    font-family: "Open Sans", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
 .button {
     font-size: 2rem;
 }
@@ -42,10 +46,11 @@
     bottom: 14px;
     left: 14px;
     display: flex;
-    width: 10px;
-    height: 10px;
+    width: 2px;
+    height: 20px;
     background-color: rgba(128, 255, 0, 0.938);
-    border-radius: 50%;    
+    border-radius: 5%;
+    transform: rotate(45deg) translateX(6px);
 }
 
 .noise-knob-control {
@@ -57,4 +62,62 @@
     height: 120px;
     /* background-color: rgba(247, 0, 255, 0.568); */
     border-radius: 20%;
+}
+
+.root {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0px;
+}
+
+.sample-block {
+    display: flex;
+    margin-bottom: 8px;
+}
+
+.pause-block {
+    display: flex;
+    flex-direction: column;
+    width: 40px;
+    background-color: #c4f1fd;
+}
+
+.pause-timer {
+    display: flex;
+    background-image: url("../images/timer.png");
+    background-position: center center;
+    background-repeat: no-repeat;
+    width: 100%;
+    height: 54px;
+    opacity: 0.5;
+}
+
+.pause-line {
+    width: 100%;
+    height: 2px;
+    background-color: #209cbe;
+}
+
+.word-block {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    background-color: rgb(217, 252, 199);
+}
+
+.title-block {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 30px;
+    font-size: 1.3rem;
+    color: rgb(24, 90, 13);
+    background-color: rgb(136, 214, 122);
+}
+
+.ws-block {
+    display: block;
+    min-width: 200px;
 }

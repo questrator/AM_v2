@@ -1,40 +1,74 @@
-import Track from "./Track.js";
+import WaveSurfer from "./wavesurfer.esm.js";
+import Spectrogram from "./spectrogram.esm.js";
 
-const noiseKnob = document.querySelector(".noise");
-noiseKnob.addEventListener("mousedown", mousedownHandler);
-noiseKnob.addEventListener("touchstart", touchstartHandler);
+import words from "./words.js";
 
-function mousedownHandler(e) {
-    rotateEase(e);
-    noiseKnob.addEventListener("mousemove", rotate);
-    noiseKnob.addEventListener("mouseup", () => {
-        noiseKnob.removeEventListener("mousemove", rotate);
-    });
-}
+console.log(words);
 
-function touchstartHandler(e) {
-    console.log("tstart")
-    rotateEase(e);
-    noiseKnob.addEventListener("touchmove", rotate);
-    noiseKnob.addEventListener("touchend", () => {
-        noiseKnob.removeEventListener("touchmove", rotate);
-    });
-}
+const root = document.querySelector(".root");
 
-function getAngle(e) {
-    if (e.touches) e = e.touches[0];
-    const center = [e.target.offsetHeight / 2, e.target.offsetWidth / 2];
-    const position = [e.clientX - e.target.parentElement.parentElement.offsetLeft, e.clientY - e.target.parentElement.parentElement.offsetTop];
-    const [cX, cY] = center.map((e, i) => position[i] - e);
-    return 180 / Math.PI * Math.atan2(cY, cX) - 135;
-}
+const wordFiles = Object.entries(words);
 
-function rotate(e) {  
-    console.log("rotate")  
-    noiseKnob.style.transitionDuration = "0ms";
-    noiseKnob.style.transform = `rotate(${getAngle(e)}deg)`;
-}
-function rotateEase(e) {
-    noiseKnob.style.transitionDuration = "300ms";
-    noiseKnob.style.transform = `rotate(${getAngle(e)}deg)`;
+for (let i = 0; i < wordFiles.length; i++) {
+  const sampleBlock = document.createElement("div");
+  sampleBlock.classList.add("sample-block");
+  sampleBlock.dataset.id = i;
+  sampleBlock.dataset.word = wordFiles[i][0];
+  root.appendChild(sampleBlock);
+
+  const pauseBlock = document.createElement("div");
+  pauseBlock.classList.add("pause-block");
+  pauseBlock.dataset.duration = i === 0 ? 500 : 4000;
+  sampleBlock.appendChild(pauseBlock);
+
+  const pauseTimer = document.createElement("div");
+  pauseTimer.classList.add("pause-timer");
+  pauseTimer.dataset.duration = i === 0 ? 500 : 4000;
+  pauseBlock.appendChild(pauseTimer);
+
+  const pauseLine = document.createElement("div");
+  pauseLine.classList.add("pause-line");
+  pauseLine.dataset.duration = i === 0 ? 500 : 4000;
+  pauseBlock.appendChild(pauseLine);
+
+  const wordBlock = document.createElement("div");
+  wordBlock.classList.add("word-block");
+  wordBlock.dataset.id = i;
+  wordBlock.dataset.word = wordFiles[i][0];
+  sampleBlock.appendChild(wordBlock);
+
+  const titleBlock = document.createElement("div");
+  titleBlock.classList.add("title-block");
+  titleBlock.dataset.id = i;
+  titleBlock.dataset.word = wordFiles[i][0];
+  titleBlock.textContent = wordFiles[i][0];
+  wordBlock.appendChild(titleBlock);
+
+  const wsBlock = document.createElement("div");
+  wsBlock.classList.add("ws-block");
+  wsBlock.dataset.id = i;
+  wordBlock.appendChild(wsBlock);
+
+  const ws = WaveSurfer.create({
+    container: `.ws-block[data-id='${i}']`,
+    waveColor: "#4F4A85",
+    progressColor: "steelblue",
+    cursorColor: "transparent",
+    url: wordFiles[i][1],
+    height: 50,
+  });
+
+  //   ws.registerPlugin(
+  //     Spectrogram.create({
+  //       labels: true,
+  //       height: 100,
+  //       splitChannels: false,
+  //       frequencyMax: 6000,
+  //       frequencyMin: 100,
+  //     })
+  //   );
+
+  ws.on("click", () => {
+    ws.play();
+  });
 }
