@@ -14,8 +14,7 @@ function mousedownHandler(e) {
 
 function getAngle(e) {
     const center = [e.target.offsetHeight / 2, e.target.offsetWidth / 2];
-    const position = [e.clientX - e.target.offsetLeft, e.clientY - e.target.offsetTop];
-    console.log(center, position)
+    const position = [e.clientX - e.target.parentElement.parentElement.offsetLeft, e.clientY - e.target.parentElement.parentElement.offsetTop];
     const [cX, cY] = center.map((e, i) => position[i] - e);
     return 180 / Math.PI * Math.atan2(cY, cX) - 135;
 }

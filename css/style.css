@@ -55,6 +55,6 @@
     display: flex;
     width: 120px;
     height: 120px;
-    background-color: rgba(247, 0, 255, 0.568);
+    /* background-color: rgba(247, 0, 255, 0.568); */
     border-radius: 20%;
 }
