@@ -22,15 +22,9 @@ function touchstartHandler(e) {
 }
 
 function getAngle(e) {
+    if (e.touches) e = e.touches[0];
     const center = [e.target.offsetHeight / 2, e.target.offsetWidth / 2];
     const position = [e.clientX - e.target.parentElement.parentElement.offsetLeft, e.clientY - e.target.parentElement.parentElement.offsetTop];
-    const [cX, cY] = center.map((e, i) => position[i] - e);
-    return 180 / Math.PI * Math.atan2(cY, cX) - 135;
-}
-
-function getAngleTouch(e) {
-    const center = [e.touches[0].target.offsetHeight / 2, e.touches[0].target.offsetWidth / 2];
-    const position = [e.touches[0].clientX - e.touches[0].target.parentElement.parentElement.offsetLeft, e.touches[0].clientY - e.touches[0].target.parentElement.parentElement.offsetTop];
     const [cX, cY] = center.map((e, i) => position[i] - e);
     return 180 / Math.PI * Math.atan2(cY, cX) - 135;
 }
@@ -38,7 +32,7 @@ function getAngleTouch(e) {
 function rotate(e) {  
     console.log("rotate")  
     noiseKnob.style.transitionDuration = "0ms";
-    noiseKnob.style.transform = `rotate(${e.touches[0] ? getAngleTouch(e) : getAngle(e)}deg)`;
+    noiseKnob.style.transform = `rotate(${getAngle(e)}deg)`;
 }
 function rotateEase(e) {
     noiseKnob.style.transitionDuration = "300ms";
