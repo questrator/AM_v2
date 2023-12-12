@@ -102,7 +102,9 @@ body {
     display: flex;
     flex-direction: column;
     flex-wrap: nowrap;
-    background-color: rgb(217, 252, 199);
+    /* background-color: rgb(217, 252, 199); */
+    /* background-blend-mode: overlay; */
+    background-image: linear-gradient(180deg, rgb(136, 214, 122) 0%, rgb(136, 214, 122) 50%, rgb(217, 252, 199) 50%, rgb(217, 252, 199) 100%);
 }
 
 .title-block {
@@ -114,7 +116,8 @@ body {
     height: 40px;
     font-size: 1.3rem;
     color: rgb(24, 90, 13);
-    background-color: rgb(136, 214, 122);
+    /* background-color: rgb(136, 214, 122); */
+    /* background-blend-mode: overlay; */
 }
 
 .ws-block {
@@ -122,8 +125,16 @@ body {
     min-width: 200px;
 }
 
-.sample-test {
+.over-block {
+    position: absolute;
+    display: block;
     width: 200px;
+    height: 80px;
+    background-color: rgba(255, 45, 87, 0);
+}
+
+.sample-test {
+    width: 240px;
     height: 30px;
     background-color: rgba(43, 222, 76, 1);
 }

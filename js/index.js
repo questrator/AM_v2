@@ -56,7 +56,13 @@ for (let i = 0; i < wordFiles.length; i++) {
     cursorColor: "transparent",
     url: wordFiles[i][1],
     height: 40,
+    interact: false,
   });
+
+  const overBlock = document.createElement("div");
+  overBlock.classList.add("over-block");
+  overBlock.dataset.id = i;
+  wordBlock.appendChild(overBlock);
 
   //   ws.registerPlugin(
   //     Spectrogram.create({
@@ -73,10 +79,11 @@ for (let i = 0; i < wordFiles.length; i++) {
   });
 }
 
-const sampleTest = document.querySelector(".sample-test");
+const sampleTest = document.querySelector(".word-block[data-id='6']");
 sampleTest.addEventListener("click", preloadSample);
 
 function preloadSample(event) {
+  sampleTest.removeEventListener("click", preloadSample);
   const audio = new Audio(words["башня"]);
   let duration = 0;
   let k = 0;
@@ -84,29 +91,31 @@ function preloadSample(event) {
     audio.addEventListener("loadedmetadata", () => {
       duration = audio.duration;
       k = duration * 1000;
+      setTimeout(() => {
+        sampleTest.addEventListener("click", preloadSample);
+      }, k);
       res(k);
     });
   });
-  load.then(result => playSample(audio, duration));
+  load.then((result) => playSample(audio, duration));
 }
 
 function playSample(audio, duration) {
   audio.play();
 
   var start = null;
-  var element = sampleTest;
+  var element = document.querySelector(".word-block[data-id='6']");
 
   function step(timestamp) {
     if (!start) start = timestamp;
     var progress = timestamp - start;
-    element.style.backgroundImage = `
+    element.style.backgroundImage = `linear-gradient(180deg, rgb(136, 214, 122) 0%, rgb(136, 214, 122) 50%, rgb(217, 252, 199) 50%, rgb(217, 252, 199) 100%),
     linear-gradient(90deg,
-        rgba(64, 176, 235, 0.9) ${(audio.currentTime) * 160 - 60}%,
-        rgba(120, 230, 255, 1.0) ${(audio.currentTime) * 160 - 20}%,
-        rgba(255, 255, 255, 0.0) ${(audio.currentTime) * 160 - 20}%,
-        rgba(255, 255, 255, 0.0) ${(audio.currentTime ) * 160 + 30}%,
-        rgba(255, 255, 255, 0.0) ${""}110%)`;
-    element.style.backgroundBlendMode = "multiply";
+        rgba(64, 176, 235, 0.9) ${audio.currentTime * 160 - 60}%,
+        rgba(120, 230, 255, 1.0) ${audio.currentTime * 160 - 20}%,
+        rgba(255, 255, 255, 0.0) ${audio.currentTime * 160 - 20}%,
+        rgba(255, 255, 255, 0.0) ${audio.currentTime * 160 + 30}%`;
+    element.style.backgroundBlendMode = "darken";
     console.log(duration * 1000);
     if (progress < duration * 1500) {
       window.requestAnimationFrame(step);
