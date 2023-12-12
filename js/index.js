@@ -3,8 +3,14 @@ import words from "./words.js";
 
 const root = document.querySelector(".root");
 const wordFiles = Object.entries(words);
+const audios = [];
 
 for (let i = 0; i < wordFiles.length; i++) {
+  const audio = new Audio(wordFiles[i][1]);
+  audio.setAttribute("preload", "metadata");
+  audio.dataset.id = i;
+  audios.push(audio);
+
   const sampleBlock = document.createElement("div");
   sampleBlock.classList.add("sample-block");
   sampleBlock.dataset.id = i;
@@ -59,39 +65,21 @@ for (let i = 0; i < wordFiles.length; i++) {
   overBlock.dataset.id = i;
   overBlock.dataset.word = wordFiles[i][0];
   wordBlock.appendChild(overBlock);
-  overBlock.addEventListener("click", preloadSample);
+  overBlock.addEventListener("click", playSample);
 
   ws.on("click", () => {
     ws.play();
   });
 }
 
-function preloadSample(event) {
-  event.target.removeEventListener("click", preloadSample);
-  const audio = new Audio(words[event.target.dataset.word]);
-  let duration = 0;
-  let k = 0;
-  const load = new Promise((res, rej) => {
-    audio.addEventListener("loadedmetadata", () => {
-      duration = audio.duration;
-      k = duration * 1000;
-      setTimeout(() => {
-        event.target.addEventListener("click", preloadSample);
-      }, k);
-      res(k);
-      rej("ошибка");
-    });
-  });
-  load
-    .then((result) => playSample(audio, duration, event.target.dataset.id))
-    .catch(() => console.log("error"));
-}
-
-function playSample(audio, duration, id = 0) {
+function playSample(event) {
+  const id = event.target.dataset.id;
+  const audio = audios[id];
+  const duration = audio.duration;
   audio.play();
 
-  var start = null;
-  var element = document.querySelector(`.word-block[data-id='${id}']`);
+  let start = null;
+  const element = document.querySelector(`.word-block[data-id='${id}']`);
 
   function step(timestamp) {
     if (!start) start = timestamp;
