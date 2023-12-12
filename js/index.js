@@ -52,7 +52,7 @@ for (let i = 0; i < wordFiles.length; i++) {
     cursorColor: "transparent",
     url: wordFiles[i][1],
     height: 40,
-    interact: false,
+    interact: true,
   });
 
   const overBlock = document.createElement("div");

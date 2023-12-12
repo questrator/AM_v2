@@ -80,6 +80,7 @@ body {
     flex-direction: column;
     width: 40px;
     background-color: #c4f1fd;
+    z-index: 5;
 }
 
 .pause-timer {
@@ -131,6 +132,15 @@ body {
     width: 200px;
     height: 80px;
     background-color: rgba(255, 45, 87, 0);
+    z-index: 10;
+}
+
+.over-block:active {
+    box-shadow: 0px 0px 5px 5px rgba(9, 157, 255, 0.1), 0px 0px 0px 8px rgba(9, 157, 255, 0.3);
+}
+
+.pause-block:active {
+    box-shadow: 0px 0px 5px 5px rgba(9, 157, 255, 0.1), 0px 0px 0px 8px rgba(9, 157, 255, 0.3);
 }
 
 .sample-test {
