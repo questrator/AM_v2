@@ -2,7 +2,6 @@ import WaveSurfer from "./wavesurfer.esm.js";
 import words from "./words.js";
 
 const root = document.querySelector(".root");
-
 const wordFiles = Object.entries(words);
 
 for (let i = 0; i < wordFiles.length; i++) {
@@ -68,7 +67,6 @@ for (let i = 0; i < wordFiles.length; i++) {
 }
 
 function preloadSample(event) {
-  event.stopPropagation();
   event.target.removeEventListener("click", preloadSample);
   const audio = new Audio(words[event.target.dataset.word]);
   let duration = 0;
@@ -78,7 +76,6 @@ function preloadSample(event) {
       duration = audio.duration;
       k = duration * 1000;
       setTimeout(() => {
-        console.log(event.target);
         event.target.addEventListener("click", preloadSample);
       }, k);
       res(k);
