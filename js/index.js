@@ -73,34 +73,45 @@ for (let i = 0; i < wordFiles.length; i++) {
   });
 }
 
-
-
 const sampleTest = document.querySelector(".sample-test");
-  const sampleTestLength = sampleTest.offsetWidth;
-  const buttonPlay = document.querySelector(".button-play");
-  buttonPlay.addEventListener("click", playSample);
-  
-  function playSample(event) {
-      const audio = new Audio(words["башня"]);
-      let duration = 0;
-      audio.addEventListener("loadedmetadata", () => {
-          duration = audio.duration;
-          console.log(duration);
-      });
-      audio.play();
-  
-      var start = null;
-      var element = sampleTest;
-  
-      function step(timestamp) {
-          if (!start) start = timestamp;
-          var progress = timestamp - start;
-          element.style.backgroundImage =
-          `linear-gradient(90deg, rgba(79, 163, 241, 1) ${audio.currentTime / duration * 100}%, rgba(253, 199, 78, 1) ${audio.currentTime / duration * 100}%)`;
-          if (progress < 2000) {
-              window.requestAnimationFrame(step);
-          }
-      }
-  
+sampleTest.addEventListener("click", preloadSample);
+
+function preloadSample(event) {
+  const audio = new Audio(words["башня"]);
+  let duration = 0;
+  let k = 0;
+  const load = new Promise((res, rej) => {
+    audio.addEventListener("loadedmetadata", () => {
+      duration = audio.duration;
+      k = duration * 1000;
+      res(k);
+    });
+  });
+  load.then(result => playSample(audio, duration));
+}
+
+function playSample(audio, duration) {
+  audio.play();
+
+  var start = null;
+  var element = sampleTest;
+
+  function step(timestamp) {
+    if (!start) start = timestamp;
+    var progress = timestamp - start;
+    element.style.backgroundImage = `
+    linear-gradient(90deg,
+        rgba(64, 176, 235, 0.9) ${(audio.currentTime) * 160 - 60}%,
+        rgba(120, 230, 255, 1.0) ${(audio.currentTime) * 160 - 20}%,
+        rgba(255, 255, 255, 0.0) ${(audio.currentTime) * 160 - 20}%,
+        rgba(255, 255, 255, 0.0) ${(audio.currentTime ) * 160 + 30}%,
+        rgba(255, 255, 255, 0.0) ${""}110%)`;
+    element.style.backgroundBlendMode = "multiply";
+    console.log(duration * 1000);
+    if (progress < duration * 1500) {
       window.requestAnimationFrame(step);
+    }
   }
+
+  window.requestAnimationFrame(step);
+}
