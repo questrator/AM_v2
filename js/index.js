@@ -55,7 +55,7 @@ for (let i = 0; i < wordFiles.length; i++) {
     progressColor: "steelblue",
     cursorColor: "transparent",
     url: wordFiles[i][1],
-    height: 50,
+    height: 40,
   });
 
   //   ws.registerPlugin(
@@ -72,3 +72,35 @@ for (let i = 0; i < wordFiles.length; i++) {
     ws.play();
   });
 }
+
+
+
+const sampleTest = document.querySelector(".sample-test");
+  const sampleTestLength = sampleTest.offsetWidth;
+  const buttonPlay = document.querySelector(".button-play");
+  buttonPlay.addEventListener("click", playSample);
+  
+  function playSample(event) {
+      const audio = new Audio(words["башня"]);
+      let duration = 0;
+      audio.addEventListener("loadedmetadata", () => {
+          duration = audio.duration;
+          console.log(duration);
+      });
+      audio.play();
+  
+      var start = null;
+      var element = sampleTest;
+  
+      function step(timestamp) {
+          if (!start) start = timestamp;
+          var progress = timestamp - start;
+          element.style.backgroundImage =
+          `linear-gradient(90deg, rgba(79, 163, 241, 1) ${audio.currentTime / duration * 100}%, rgba(253, 199, 78, 1) ${audio.currentTime / duration * 100}%)`;
+          if (progress < 2000) {
+              window.requestAnimationFrame(step);
+          }
+      }
+  
+      window.requestAnimationFrame(step);
+  }
