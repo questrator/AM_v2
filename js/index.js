@@ -1,9 +1,5 @@
 import WaveSurfer from "./wavesurfer.esm.js";
-import Spectrogram from "./spectrogram.esm.js";
-
 import words from "./words.js";
-
-console.log(words);
 
 const root = document.querySelector(".root");
 
@@ -62,29 +58,19 @@ for (let i = 0; i < wordFiles.length; i++) {
   const overBlock = document.createElement("div");
   overBlock.classList.add("over-block");
   overBlock.dataset.id = i;
+  overBlock.dataset.word = wordFiles[i][0];
   wordBlock.appendChild(overBlock);
-
-  //   ws.registerPlugin(
-  //     Spectrogram.create({
-  //       labels: true,
-  //       height: 100,
-  //       splitChannels: false,
-  //       frequencyMax: 6000,
-  //       frequencyMin: 100,
-  //     })
-  //   );
+  overBlock.addEventListener("click", preloadSample);
 
   ws.on("click", () => {
     ws.play();
   });
 }
 
-const sampleTest = document.querySelector(".word-block[data-id='6']");
-sampleTest.addEventListener("click", preloadSample);
-
 function preloadSample(event) {
-  sampleTest.removeEventListener("click", preloadSample);
-  const audio = new Audio(words["башня"]);
+  event.stopPropagation();
+  event.target.removeEventListener("click", preloadSample);
+  const audio = new Audio(words[event.target.dataset.word]);
   let duration = 0;
   let k = 0;
   const load = new Promise((res, rej) => {
@@ -92,19 +78,23 @@ function preloadSample(event) {
       duration = audio.duration;
       k = duration * 1000;
       setTimeout(() => {
-        sampleTest.addEventListener("click", preloadSample);
+        console.log(event.target);
+        event.target.addEventListener("click", preloadSample);
       }, k);
       res(k);
+      rej("ошибка");
     });
   });
-  load.then((result) => playSample(audio, duration));
+  load
+    .then((result) => playSample(audio, duration, event.target.dataset.id))
+    .catch(() => console.log("error"));
 }
 
-function playSample(audio, duration) {
+function playSample(audio, duration, id = 0) {
   audio.play();
 
   var start = null;
-  var element = document.querySelector(".word-block[data-id='6']");
+  var element = document.querySelector(`.word-block[data-id='${id}']`);
 
   function step(timestamp) {
     if (!start) start = timestamp;
@@ -116,7 +106,6 @@ function playSample(audio, duration) {
         rgba(255, 255, 255, 0.0) ${audio.currentTime * 160 - 20}%,
         rgba(255, 255, 255, 0.0) ${audio.currentTime * 160 + 30}%`;
     element.style.backgroundBlendMode = "darken";
-    console.log(duration * 1000);
     if (progress < duration * 1500) {
       window.requestAnimationFrame(step);
     }
