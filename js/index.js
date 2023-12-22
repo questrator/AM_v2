@@ -4,6 +4,8 @@ import words from "./words.js";
 const root = document.querySelector(".root");
 const wordFiles = Object.entries(words);
 const audios = [];
+const buttonPlay = document.querySelector(".button-play");
+buttonPlay.addEventListener("click", playTrack);
 
 for (let i = 0; i < wordFiles.length; i++) {
   const audio = new Audio(wordFiles[i][1]);
@@ -75,9 +77,12 @@ for (let i = 0; i < wordFiles.length; i++) {
 function playSample(event) {
   const id = event.target.dataset.id;
   const audio = audios[id];
-  const duration = audio.duration;
   audio.play();
+  animateSample(id, audio);
+}
 
+function animateSample(id, audio) {
+  const duration = audio.duration;
   let start = null;
   const element = document.querySelector(`.word-block[data-id='${id}']`);
 
@@ -97,4 +102,40 @@ function playSample(event) {
   }
 
   window.requestAnimationFrame(step);
+}
+
+let currentIndex = 0;
+function playTrack(event) {
+  buttonPlay.removeEventListener("click", playTrack);
+  console.log(currentIndex);
+  if (audios.length === 0) return;
+  
+  let currentAudio = audios[currentIndex];
+  console.log(currentAudio);
+  currentAudio.load();
+  currentAudio.addEventListener("loadedmetadata", playCurrent);
+  currentAudio.addEventListener("ended", playNext);
+
+  function playCurrent() {
+    currentAudio.play();
+    animateSample(currentIndex, currentAudio);
+  }
+
+  function playNext() {
+    if (currentIndex > audios.length - 1) {
+        console.log("!!")
+        currentAudio.removeEventListener("loadedmetadata", playCurrent);
+        currentAudio.removeEventListener("ended", playNext);
+        currentIndex = 0;
+        return;
+      }
+    currentIndex++;
+    setTimeout(() => playTrack(), 500);
+  }
+}
+
+function reload() {
+  buttonPlay.addEventListener("click", playTrack);
+  currentIndex = 0;
+  playTrack();
 }
